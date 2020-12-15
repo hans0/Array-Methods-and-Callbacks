@@ -139,25 +139,21 @@ Hint: Investigate your data to find "team initials"!
 Hint: use `.reduce` */
 
 function getCountryWins(data, initials) {
-    /* code here */
+    /* We are assuming winning the entire cup */
     const winnerReducer = (g) => {
-        // console.log(g['Year']);
-        // console.log(g['Home Team Initials'])
         if (g['Home Team Goals'] === g['Away Team Goals']){
-            //console.log(g['Home Team Goals'] === g['Away Team Goals']);
             return g['Win conditions'].includes(g['Home Team']) ? g['Home Team Initials'] : g['Away Team Initials'];
         }
         return g['Home Team Goals'] > g['Away Team Goals'] ? g['Home Team Initials']: g['Away Team Initials'];
     };
     const finals = getFinals(data);
     return finals.reduce( (accum, game) => {
-        //console.log(accum);
         return accum + (winnerReducer(game) === initials ? 1 : 0);
     }, 0);
 }
 
-console.log(getCountryWins(fifaData, 'GER')); // should be 4, actually 1, because history, GER was not used until 1994
-console.log(getCountryWins(fifaData, 'FRG')); // should be 4, actually 1, because history, GER was not used until 1994
+console.log(getCountryWins(fifaData, 'GER')); // thought it was 4, actually 1, because history, GER was not used until 1994
+console.log(getCountryWins(fifaData, 'FRG')); // thought it was 4, actually 3, because history, GER was not used until 1994
 
 
 
