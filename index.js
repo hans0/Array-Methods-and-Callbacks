@@ -78,8 +78,7 @@ function getWinners(data, callback) {
         (g) => {
             return g['Home Team Goals'] > g['Away Team Goals'] ? g['Home Team Name'] : g['Away Team Name'];
         }
-    )
-
+    );
 }
 
 
@@ -95,7 +94,6 @@ hint: the strings returned need to exactly match the string in step 4.
  */
 
 function getWinnersByYear(data, gYears, gWinners) {
-    /* code here */
     const years = gYears(data);
     const winners = gWinners(data);
     let i = 0;
@@ -104,6 +102,12 @@ function getWinnersByYear(data, gYears, gWinners) {
         result.push(`In ${y}, ${winners[i++]} won the world cup!`);
     });
     return result;
+    /* This is a cleaner version, and probably what they were looking for
+    let winners = gWinners(data).map(function(item, index)){
+        return `In ${gYears(data)[index]}, ${item} won the world cup!`;
+    }
+    return winners;
+    */
 }
 
 
@@ -119,22 +123,8 @@ Use the higher order function getAverageGoals to do the following:
 */
 
 function getAverageGoals(gFinals) {
-   /* code here */
-    //console.log(gFinals);
-    const reducer = (accum, g) => {  return accum + g['Home Team Goals'] + g['Away Team Goals']};
-
+    const reducer = (accum, g) => {return accum + g['Home Team Goals'] + g['Away Team Goals']};
     return ( gFinals.reduce(reducer, 0) / gFinals.length ).toFixed(2);
-    /*
-    const reducer = (g) => {g['Home Team Goals'] + g['Away Team Goals'], 0};
-    console.log(gFinals.reduce(reducer));
-    */
-    /* Attempt 1
-    return gFinals.reduce( (g) => {
-        console.log(typeof(g));
-        return 0;// game['Home Team Goals'] + game['Away Team Goals'];
-    },  
-    0);
-    */
 }
 
 
@@ -148,11 +138,26 @@ Create a function called `getCountryWins` that takes the parameters `data` and `
 Hint: Investigate your data to find "team initials"!
 Hint: use `.reduce` */
 
-function getCountryWins(/* code here */) {
-
+function getCountryWins(data, initials) {
     /* code here */
-
+    const winnerReducer = (g) => {
+        // console.log(g['Year']);
+        // console.log(g['Home Team Initials'])
+        if (g['Home Team Goals'] === g['Away Team Goals']){
+            //console.log(g['Home Team Goals'] === g['Away Team Goals']);
+            return g['Win conditions'].includes(g['Home Team']) ? g['Home Team Initials'] : g['Away Team Initials'];
+        }
+        return g['Home Team Goals'] > g['Away Team Goals'] ? g['Home Team Initials']: g['Away Team Initials'];
+    };
+    const finals = getFinals(data);
+    return finals.reduce( (accum, game) => {
+        //console.log(accum);
+        return accum + (winnerReducer(game) === initials ? 1 : 0);
+    }, 0);
 }
+
+console.log(getCountryWins(fifaData, 'GER')); // should be 4, actually 1, because history, GER was not used until 1994
+console.log(getCountryWins(fifaData, 'FRG')); // should be 4, actually 1, because history, GER was not used until 1994
 
 
 
